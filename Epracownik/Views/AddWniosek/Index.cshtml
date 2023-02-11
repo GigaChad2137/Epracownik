@@ -1,0 +1,118 @@
+﻿@model IEnumerable<Epracownik.Models.Wnioski>
+<style>
+    /* ustawienie tła */
+    body {
+        background-color: #F2F2F2;
+    }
+
+    /* ustawienie wyglądu formularza */
+    form {
+        width: 50%;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: white;
+        box-shadow: 0px 0px 10px #BBBBBB;
+        border-radius: 10px;
+    }
+
+    /* ustawienie wyglądu label */
+    label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    /* ustawienie wyglądu select */
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #BBBBBB;
+    }
+
+    /* ustawienie wyglądu pola numerycznego */
+    input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #BBBBBB;
+    }
+
+    /* ustawienie wyglądu pól daty */
+    input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #BBBBBB;
+    }
+
+    /* ustawienie wyglądu pola tekstowego */
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #BBBBBB;
+        resize: none;
+    }
+
+    /* ustawienie wyglądu przycisku */
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+<form method="POST">
+    <label for="select_wnioski">Wybierz powód:</label>
+    <select id="select_wnioski" name="select_wnioski">
+        <option selected disabled>Wybierz Wniosek</option>
+        @foreach (var wniosek in Model)
+        {
+            <option value="@wniosek.Id">@wniosek.TypWniosku</option>
+        }
+
+    </select>
+    <br><br>
+    <div id="urlop-details" style="display: none;">
+        <label for="start_date">Data rozpoczęcia:</label>
+        <input type="date" id="start_date" name="start_date">
+        <br><br>
+        <label for="end_date">Data zakończenia:</label>
+        <input type="date" id="end_date" name="end_date">
+    </div>
+    <div id="wage-details" style="display: none;">
+        <label for="wage">Wynagrodzenie:</label>
+        <input type="number" id="wage" name="wage">
+    </div>
+    <br><br>
+    <label for="note">Notatka:</label>
+    <textarea id="note" name="note"></textarea>
+    <br><br>
+    <input type="submit" value="Wyślij">
+</form>
+
+<script>
+    document.querySelector("#select_wnioski").addEventListener("change", function () {
+        if (this.value == 1 || this.value == 3) {
+            document.querySelector("#urlop-details").style.display = "block";
+            document.querySelector("#wage-details").style.display = "none";
+        } else if (this.value == 2) {
+            document.querySelector("#wage-details").style.display = "block";
+            document.querySelector("#urlop-details").style.display = "none";
+        }
+    });
+</script>

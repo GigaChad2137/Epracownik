@@ -15,10 +15,10 @@ namespace Epracownik.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext db;
         public HomeController(AppDbContext context)
         {
-            _context = context;
+            db = context;
         }
 
         public IActionResult Index(string Message)
@@ -29,36 +29,45 @@ namespace Epracownik.Controllers
         [HttpPost]
         public IActionResult Index(string username, string password)
         {
-            
-            var passwdhashed = GetHashedText(password);
-            if (_context.Users.Where(c => c.Username == username && c.Password == passwdhashed).Count() > 0)
+            using (var contex = db.Database.BeginTransaction())
             {
-                string status_pracy = "Zakończ Prace";
-                var id_finder = from c in _context.Users where c.Username == username select c; // zapytanie do bazy danych zwracające wszystkie rekordy pasujące do wymagań
-                var id_checker = id_finder.FirstOrDefault<User>();  //funkcja zwracająca pierwszy wiersz z wcześniejszego zapytania
-                DateTime thisDay = DateTime.Today; //zmienna zawierająca aktualną date
-                var czy_pracuje = _context.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).First(); // zapytanie do bazy danych, które zlicza ilość zwróconych rekordów
-                if (czy_pracuje == null)  // jeżeli zapytanie zwróci 0 to wykona się zapisanie rekordu i commit transakcji - czyli dodanie rekordu do bazy danych
+                var passwdhashed = GetHashedText(password);
+                if (db.Users.Where(c => c.Username == username && c.Password == passwdhashed).Any())
                 {
-                    _context.Pracas.Add(new Praca { IdPracownika = id_checker.Id, Data = thisDay, DataRozpoczecia = null, DataZakonczenia = null, CzyPracuje = "Nie Pracuje" });
-                    _context.SaveChanges();
-                    status_pracy = "Rozpocznij Prace";
-                }
-                else if(czy_pracuje.CzyPracuje == "Nie Pracuje")
-                {
-                    status_pracy = "Rozpocznij Prace";
-                }
-                HttpContext.Session.SetString("Session_Username", username);
-                HttpContext.Session.SetInt32("Session_id", id_checker.Id);
-                HttpContext.Session.SetString("Session_Praca", status_pracy);
-                return RedirectToAction("index", "Main");
-            }
-            else
-            {
-                
+                    string status_pracy = "Zakończ Prace";
+                    var id_finder = from c in db.Users where c.Username == username select c; // zapytanie do bazy danych zwracające wszystkie rekordy pasujące do wymagań
+                    var id_checker = id_finder.FirstOrDefault<User>();  //funkcja zwracająca pierwszy wiersz z wcześniejszego zapytania
+                    DateTime thisDay = DateTime.Today; //zmienna zawierająca aktualną date
+                    var czy_pracuje = db.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).Count(); // zapytanie do bazy danych, które zlicza ilość zwróconych rekordów
+                    Console.WriteLine(czy_pracuje);
+                    if (czy_pracuje == 0)  // jeżeli zapytanie zwróci 0 to wykona się zapisanie rekordu i commit transakcji - czyli dodanie rekordu do bazy danych
+                    {
+                        db.Pracas.Add(new Praca { IdPracownika = id_checker.Id, Data = thisDay, DataRozpoczecia = null, DataZakonczenia = null, CzyPracuje = "Nie Pracuje" });
+                        db.SaveChanges();
+                        status_pracy = "Rozpocznij Prace";
+                    }
+                    else
+                    {
+                        var stan_pracy_check = db.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).First();
+                        if (stan_pracy_check.CzyPracuje == "Nie Pracuje")
+                        {
+                            status_pracy = "Rozpocznij Prace";
+                        }
+                    }
+                    HttpContext.Session.SetString("Session_Username", username);
+                    HttpContext.Session.SetInt32("Session_id", id_checker.Id);
+                    HttpContext.Session.SetString("Session_Praca", status_pracy);
+                    contex.Commit();
+                    return RedirectToAction("index", "Main");
 
-                ViewData["Message"] = "Nieprawidłowy login lub hasło";
-                return View();
+                }
+                else
+                {
+
+
+                    ViewData["Message"] = "Nieprawidłowy login lub hasło";
+                    return View();
+                }
             }
                 
         }

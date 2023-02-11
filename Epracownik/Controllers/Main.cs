@@ -78,7 +78,9 @@ namespace Epracownik.Controllers
             var username = HttpContext.Session.GetString("Session_Username");
             if (!string.IsNullOrEmpty(username))
             {
-                return View();
+                var id_currect_user = HttpContext.Session.GetInt32("Session_id");
+                var wnioski = _context.UserWnioskis.Where(c => c.IdPracownika == id_currect_user);
+                return View(wnioski); 
             }
             else
             {

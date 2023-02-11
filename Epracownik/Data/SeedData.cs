@@ -14,10 +14,6 @@ namespace CarWise.Data
             {
                 context.Database.EnsureCreated();
 
-
-        
-
-                /* do uzupełnienia */
             }
         } 
     
