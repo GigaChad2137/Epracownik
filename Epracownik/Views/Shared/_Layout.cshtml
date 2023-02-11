@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Epracownik</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+   <style>
+       .navbar {
+           background-color: #343a40;
+       }
+
+           .navbar a {
+               color: white;
+           }
+
+               .navbar a:hover,
+               .navbar a:focus {
+                   color: #5bc0de;
+               }
+        body {
+            background-color:whitesmoke;
+        }
+       .bg-dark {
+           background-color: #343a40;
+       }
+       footer {
+           position: absolute;
+           bottom: 0;
+           width: 100%;
+           height: 60px;
+           background-color: #343a40;
+       }
+
+       .text-center {
+           text-align: center;
+       }
+
+       .text-white {
+           color: white;
+       }
+
+
+
+
+   </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Faq" asp-action="Index" >Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-dark py-3">
+        <div class="container">
+            <p class="text-center text-white">Copyright &copy; Your Website 2022</p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

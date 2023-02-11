@@ -1,0 +1,55 @@
+﻿<html>
+<head>
+    <title>Strona nie znaleziona</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .error-content {
+            margin-top: 50px;
+        }
+
+            .error-content h1 {
+                font-size: 180px;
+                color: #ccc;
+                margin-bottom: 10px;
+            }
+
+            .error-content h3 {
+                font-size: 36px;
+                color: #333;
+                margin-bottom: 20px;
+            }
+
+            .error-content p {
+                font-size: 18px;
+                color: #999;
+                margin-bottom: 20px;
+            }
+
+            .error-content a {
+                font-size: 18px;
+                color: #007bff;
+                text-decoration: none;
+                border-bottom: 1px solid #007bff;
+                padding-bottom: 2px;
+            }
+
+                .error-content a:hover {
+                    color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-message">Strona nie została znaleziona</h2>
+        <p>Przepraszamy, ale strona, której szukasz, nie została znaleziona. Może być ona niedostępna lub została przeniesiona do innego miejsca.</p>
+        <a asp-controller="Main" asp-action="Index"  class="error-back-button">Wróć do strony głównej</a>
+    </div>
+</body>
+</html>
