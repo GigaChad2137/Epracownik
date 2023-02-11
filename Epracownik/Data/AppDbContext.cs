@@ -25,7 +25,7 @@ namespace Epracownik.Data
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserWnioski> UserWnioskis { get; set; }
         public virtual DbSet<Wiadomosci> Wiadomoscis { get; set; }
-        public virtual DbSet<Wnioski> Wnioski { get; set; }
+        public virtual DbSet<Wnioski> Wnioskis { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

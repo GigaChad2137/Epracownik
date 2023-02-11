@@ -24,9 +24,12 @@ namespace Epracownik
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSession();
             services.AddControllersWithViews();
-            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(@"Data Source=CarWiseDB.mdf"));
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+            });
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Klaudiusz\source\repos\Epracownik\Epracownik\baza_projekt.mdf;Integrated Security=True"));
         }
@@ -42,9 +45,11 @@ namespace Epracownik
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseSession();
+          
             app.UseStatusCodePagesWithReExecute("/Error/Error404");
             app.UseStaticFiles();
-            app.UseSession();
+            
             app.UseRouting();
 
             app.UseAuthorization();
