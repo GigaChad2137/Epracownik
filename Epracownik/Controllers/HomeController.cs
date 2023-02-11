@@ -9,6 +9,7 @@ using Epracownik.Data;
 using System.Web;
 using Microsoft.AspNetCore.Http;
 using Epracownik.Models;
+using System.Diagnostics;
 
 namespace Epracownik.Controllers
 {
@@ -20,7 +21,7 @@ namespace Epracownik.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string? Message)
+        public IActionResult Index(string Message)
         {
             ViewData["Message"] = Message;
             return View();
@@ -36,11 +37,15 @@ namespace Epracownik.Controllers
                 var id_finder = from c in _context.Users where c.Username == username select c; // zapytanie do bazy danych zwracające wszystkie rekordy pasujące do wymagań
                 var id_checker = id_finder.FirstOrDefault<User>();  //funkcja zwracająca pierwszy wiersz z wcześniejszego zapytania
                 DateTime thisDay = DateTime.Today; //zmienna zawierająca aktualną date
-                var czy_pracuje = _context.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).Count(); // zapytanie do bazy danych, które zlicza ilość zwróconych rekordów
-                if (czy_pracuje == 0)  // jeżeli zapytanie zwróci 0 to wykona się zapisanie rekordu i commit transakcji - czyli dodanie rekordu do bazy danych
+                var czy_pracuje = _context.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).First(); // zapytanie do bazy danych, które zlicza ilość zwróconych rekordów
+                if (czy_pracuje == null)  // jeżeli zapytanie zwróci 0 to wykona się zapisanie rekordu i commit transakcji - czyli dodanie rekordu do bazy danych
                 {
                     _context.Pracas.Add(new Praca { IdPracownika = id_checker.Id, Data = thisDay, DataRozpoczecia = null, DataZakonczenia = null, CzyPracuje = "Nie Pracuje" });
                     _context.SaveChanges();
+                    status_pracy = "Rozpocznij Prace";
+                }
+                else if(czy_pracuje.CzyPracuje == "Nie Pracuje")
+                {
                     status_pracy = "Rozpocznij Prace";
                 }
                 HttpContext.Session.SetString("Session_Username", username);

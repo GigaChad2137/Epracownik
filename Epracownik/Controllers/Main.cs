@@ -10,19 +10,29 @@ namespace Epracownik.Controllers
 {
     public class Main : Controller
     {
+        public class Status_Pracy
+        {
+            public string Status_pracy { get; set; }
+        }
+
         private readonly AppDbContext _context;
         public Main(AppDbContext context)
         {
             _context = context;
-        }
+        } 
 
         public IActionResult Index()
         {
             var username = HttpContext.Session.GetString("Session_Username");
             if (!string.IsNullOrEmpty(username))
             {
-                var status_pracy = HttpContext.Session.GetString("Session_Username");
-                return View();
+                var status_pracy = HttpContext.Session.GetString("Session_Praca");
+                var model = new Status_Pracy
+                {
+                    Status_pracy = status_pracy
+                };
+                
+                return View(model);
             }
             else
             {
