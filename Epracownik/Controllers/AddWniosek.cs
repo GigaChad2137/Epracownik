@@ -3,9 +3,7 @@ using Epracownik.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Epracownik.Controllers
 {
@@ -32,7 +30,6 @@ namespace Epracownik.Controllers
         [HttpPost]
         public IActionResult Index(string select_wnioski, DateTime start_date,DateTime end_date,string wage,string note)
         {
-
             var username_currect_user = HttpContext.Session.GetString("Session_Username");
             if (!string.IsNullOrEmpty(username_currect_user))
             {
@@ -42,8 +39,6 @@ namespace Epracownik.Controllers
                     int typ_wniosku = int.Parse(select_wnioski);
                     int id_currect_user = (int)HttpContext.Session.GetInt32("Session_id");
                     string tresc_wiadomosci = note;
-                    
-                  
                     using (var contex = db.Database.BeginTransaction())
                     {
                         var testow = db.Wnioskis.First(x => x.Id == typ_wniosku);
@@ -59,13 +54,11 @@ namespace Epracownik.Controllers
                             {
                                 message = "Brak Wymaganego Pola";
                             }
-
                         }
                         else
                         {
                             if (start_date == DateTime.MinValue || end_date == DateTime.MinValue || start_date > end_date)
                             {
-
                                 message = "Wybierz Poprawny Zakres Dat!";
                             }
                             else
@@ -77,7 +70,6 @@ namespace Epracownik.Controllers
                         }
                         contex.Commit();
                         }
-                    
                 }
                 return RedirectToAction("Index", "AddWniosek", new { Message = message });
             }

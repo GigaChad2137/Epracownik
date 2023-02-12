@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Epracownik.Controllers
 {
@@ -31,7 +29,6 @@ namespace Epracownik.Controllers
                         HttpContext.Session.SetString("Session_Praca", "Rozpocznij Prace");
                         czy_pracuje.DataZakonczenia = Date_with_time;
                         czy_pracuje.CzyPracuje = "Nie Pracuje";
-
                     }
                     else if (czy_pracuje.CzyPracuje == "Nie Pracuje")
                     {
@@ -58,7 +55,6 @@ namespace Epracownik.Controllers
             {
                 return RedirectToAction("Index", "Home", new { Message = "Nie jesteś zalogowany!" });
             }
-
         }
     }
 }

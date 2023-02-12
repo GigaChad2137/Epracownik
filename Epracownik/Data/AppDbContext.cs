@@ -1,7 +1,6 @@
 ﻿using System;
 using Epracownik.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -12,12 +11,10 @@ namespace Epracownik.Data
         public AppDbContext()
         {
         }
-
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
-
         public virtual DbSet<InformacjePersonalne> InformacjePersonalnes { get; set; }
         public virtual DbSet<Praca> Pracas { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -34,7 +31,6 @@ namespace Epracownik.Data
                 optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Klaudiusz\\source\\repos\\Dziekanat\\baza_projekt.mdf;Integrated Security=True");
             }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
@@ -251,7 +247,6 @@ namespace Epracownik.Data
 
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

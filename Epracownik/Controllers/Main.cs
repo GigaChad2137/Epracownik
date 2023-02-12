@@ -4,11 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using System.Threading.Tasks;
-using iTextSharp.text.pdf.draw;
 
 namespace Epracownik.Controllers
 {
@@ -33,7 +28,6 @@ namespace Epracownik.Controllers
         {
             db = context;
         } 
-
         public IActionResult Index()
         {
             var username = HttpContext.Session.GetString("Session_Username");
@@ -45,16 +39,13 @@ namespace Epracownik.Controllers
                 {
                     Status_pracy = status_pracy
                 };
-                
                 return View(model);
             }
             else
             {
                 return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
             }
-            
         }
-
         public IActionResult Wnioski()
         {
             var username = HttpContext.Session.GetString("Session_Username");
@@ -70,15 +61,15 @@ namespace Epracownik.Controllers
                                                    join user_wnioski in db.UserWnioskis on users.Id equals user_wnioski.IdPracownika
                                                    join wnioski in db.Wnioskis on user_wnioski.IdWniosku equals wnioski.Id
                                                    where user_wnioski.StatusWniosku == null && users.Id == id_currect_user
-                                                        select new
-                                                        {
-                                                            wnioski.TypWniosku,
-                                                            user_wnioski.DataRozpoczecia,
-                                                            user_wnioski.DataZakonczenia,
-                                                            user_wnioski.Notka,
-                                                            user_wnioski.Kwota,
-                                                            user_wnioski.StatusWniosku
-                                                        }).ToList();
+                                                   select new
+                                                    {
+                                                        wnioski.TypWniosku,
+                                                        user_wnioski.DataRozpoczecia,
+                                                        user_wnioski.DataZakonczenia,
+                                                        user_wnioski.Notka,
+                                                        user_wnioski.Kwota,
+                                                        user_wnioski.StatusWniosku
+                                                    }).ToList();
                     List<WnioskiDoRozpatrzeniaModel> wnioski_uzytkownika = new List<WnioskiDoRozpatrzeniaModel>();
                     foreach(var wniosek in wnioski_do_rozpatrzenia)
                     {
@@ -93,6 +84,5 @@ namespace Epracownik.Controllers
                 return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
             }
         }
-       
     }
 }

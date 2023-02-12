@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using Epracownik.Data;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using Epracownik.Models;
-using System.Diagnostics;
 
 namespace Epracownik.Controllers
 {
@@ -20,7 +16,6 @@ namespace Epracownik.Controllers
         {
             db = context;
         }
-
         public IActionResult Index(string Message)
         {
             ViewData["Message"] = Message;
@@ -68,7 +63,6 @@ namespace Epracownik.Controllers
                         HttpContext.Session.SetString("Session_Rola", "User");
                         return RedirectToAction("index", "Main");
                     }
-
                 }
                 else
                 {
@@ -78,7 +72,6 @@ namespace Epracownik.Controllers
                     return View();
                 }
             }
-                
         }
         private string GetHashedText(string inputData) //funkcja hashująca 
         {
@@ -89,5 +82,4 @@ namespace Epracownik.Controllers
             return Convert.ToBase64String(tmpData); //zahashowaną tablice przekonwertowywuje do stringa i następnia zwraca
         }
     }
- 
 }

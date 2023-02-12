@@ -7,14 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Epracownik.Controllers
 {
     public class EwidencjaPracy : Controller
     {
-      
-
         private readonly AppDbContext db;
         public EwidencjaPracy(AppDbContext context)
         {
@@ -39,7 +36,6 @@ namespace Epracownik.Controllers
             var first = month.AddMonths(-1);
             var last = month.AddDays(-1);
             string data_rozliczenia = $"{first.ToShortDateString()}-{last.ToShortDateString()}";
-
             double suma_miesiac = 0;
 
             using (var contex = db.Database.BeginTransaction())
@@ -58,8 +54,6 @@ namespace Epracownik.Controllers
                 suma_wyplata = $"{suma_miesiac}$";
             }
             return (items, suma_wyplata, data_rozliczenia);
-
-
         }
         public IActionResult Index()
         {
@@ -140,7 +134,6 @@ namespace Epracownik.Controllers
                     headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
 
-
                     foreach (var item in pdfView)
                     {
                         table.AddCell(item.data);
@@ -153,16 +146,11 @@ namespace Epracownik.Controllers
                     document.Add(table);
                     document.Add(new Paragraph("\n"));
                     Paragraph signatureLeft = new Paragraph("Podpis", fontContent);
-
                     Paragraph date = new Paragraph("Data", fontContent);
-
                     Paragraph signatureRight = new Paragraph("Wynagrodzenie", fontContent);
-
                     PdfPTable table_SUM = new PdfPTable(3);
                     table.WidthPercentage = 100;
                     table.PaddingTop = 200;
-
-
 
                     PdfPCell cell_podpis = new PdfPCell(signatureLeft);
                     cell_podpis.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -175,7 +163,6 @@ namespace Epracownik.Controllers
                     PdfPCell cell_wynagrodzenie = new PdfPCell(signatureRight);
                     cell_wynagrodzenie.HorizontalAlignment = Element.ALIGN_CENTER;
                     table_SUM.AddCell(cell_wynagrodzenie);
-
                     table_SUM.AddCell("");
 
                     PdfPCell cell_data1 = new PdfPCell(new Paragraph(DateTime.Now.ToString("dd.MM.yyyy"), fontContent));
@@ -186,24 +173,16 @@ namespace Epracownik.Controllers
                     cell_wynagrodzenie1.HorizontalAlignment = Element.ALIGN_CENTER;
                     table_SUM.AddCell(cell_wynagrodzenie1);
 
-
-
-
-
-
                     document.Add(table_SUM);
                     document.Close();
 
                     return File(memoryStream.ToArray(), "application/pdf", "Rozliczenie.pdf");
-
                 }
             }
             else
             {
                 return RedirectToAction("Index", "Home", new { Message = "Nie jesteś zalogowany!" });
             }
-
-
         }
     }
 }
