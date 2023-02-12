@@ -102,7 +102,15 @@
     <label for="note">Notatka:</label>
     <textarea id="note" name="note"></textarea>
     <br><br>
+
     <input type="submit" value="Wyślij">
+    <br><br>
+    @if (ViewData["Message"] != null)
+    {
+        <div class="alert alert-primary">
+            @ViewData["Message"]
+        </div>
+    }
 </form>
 
 <script>

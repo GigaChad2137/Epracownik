@@ -16,11 +16,12 @@ namespace Epracownik.Controllers
         {
             db = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(string Message)
         {
             var username = HttpContext.Session.GetString("Session_Username");
             if (!string.IsNullOrEmpty(username)) {
                 var wnioski = db.Wnioskis.ToList();
+                ViewData["Message"] = Message;
                 return View(wnioski);
             }
             else
@@ -31,57 +32,54 @@ namespace Epracownik.Controllers
         [HttpPost]
         public IActionResult Index(string select_wnioski, DateTime start_date,DateTime end_date,string wage,string note)
         {
-            Console.WriteLine(select_wnioski);
-            Console.WriteLine(start_date);
-            Console.WriteLine(end_date);
-            Console.WriteLine(wage);
-            Console.WriteLine(note);
 
             var username_currect_user = HttpContext.Session.GetString("Session_Username");
             if (!string.IsNullOrEmpty(username_currect_user))
             {
+                string message = "Brak wymaganego Pola"; 
                 if (select_wnioski != null)
                 {
                     int typ_wniosku = int.Parse(select_wnioski);
                     int id_currect_user = (int)HttpContext.Session.GetInt32("Session_id");
                     string tresc_wiadomosci = note;
+                    
                   
                     using (var contex = db.Database.BeginTransaction())
                     {
                         var testow = db.Wnioskis.First(x => x.Id == typ_wniosku);
                         if (testow.TypWniosku == "Wynagrodzenie")
                         {
-                            if (wage != "")
+                            if (wage != null)
                             {
                                 db.UserWnioskis.Add(new UserWnioski { IdPracownika = id_currect_user, IdWniosku = typ_wniosku, DataRozpoczecia = DateTime.Today, DataZakonczenia = DateTime.Today, Notka = note, Kwota = Convert.ToInt32(wage) });
                                 db.SaveChanges();
-                                ViewData["Message"] = "Wniosek Wysłany!";
+                                message = "Wniosek Wysłany!";
                             }
                             else
                             {
-                                ViewData["Message"] = "Brak wymaganego Pola";
+                                message = "Brak Wymaganego Pola";
                             }
 
                         }
                         else
                         {
-                            if (start_date == null || end_date == null || start_date > end_date)
+                            if (start_date == DateTime.MinValue || end_date == DateTime.MinValue || start_date > end_date)
                             {
 
-                                ViewData["Message"] = "Brak wymaganego Pola";
+                                message = "Wybierz Poprawny Zakres Dat!";
                             }
                             else
                             {
                                 db.UserWnioskis.Add(new UserWnioski { IdPracownika = id_currect_user, IdWniosku = typ_wniosku, DataRozpoczecia = start_date, DataZakonczenia = end_date, Notka = note });
                                 db.SaveChanges();
-                                ViewData["Message"] = "Wniosek Wysłany!";
+                               message= "Wniosek Wysłany!";
                             }
                         }
                         contex.Commit();
                         }
                     
                 }
-                return RedirectToAction("Index", "AddWniosek");
+                return RedirectToAction("Index", "AddWniosek", new { Message = message });
             }
             else
             {
