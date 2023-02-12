@@ -58,7 +58,16 @@ namespace Epracownik.Controllers
                     HttpContext.Session.SetInt32("Session_id", id_checker.Id);
                     HttpContext.Session.SetString("Session_Praca", status_pracy);
                     contex.Commit();
-                    return RedirectToAction("index", "Main");
+                    if (db.UserRoles.Where(c => c.IdUser == id_checker.Id && c.IdRole == 1).Any()) //zapytanie sprawdzajace czy użytkownik posiada uprawnienia admmina
+                    {
+                        HttpContext.Session.SetString("Session_Rola", "Admin");
+                        return RedirectToAction("index", "MainAdmin");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("Session_Rola", "User");
+                        return RedirectToAction("index", "Main");
+                    }
 
                 }
                 else
