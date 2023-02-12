@@ -138,6 +138,39 @@ namespace Epracownik.Controllers
             public string godziny { get; set; }
             public string kwota { get; set; }
         }
+
+        public (List<Pdf_view>, string, string) fillList()
+        {
+            List<Pdf_view> items = new List<Pdf_view>();
+            var id_currect_user = HttpContext.Session.GetInt32("Session_id");
+            var today = DateTime.Today;
+            string suma_wyplata = "...";
+            var month = new DateTime(today.Year, today.Month, 1);
+            var first = month.AddMonths(-1);
+            var last = month.AddDays(-1);
+            string data_rozliczenia = $"{first.ToShortDateString()}-{last.ToShortDateString()}";
+
+            double suma_miesiac = 0;
+
+            using (var contex = db.Database.BeginTransaction())
+            {
+                var dane_usera = db.InformacjePersonalnes.Where(x => x.IdPracownika == id_currect_user).First();
+                double zarobek_na_godzine = dane_usera.Zarobki / 160;
+                var miesiac_rozliczenia = db.Pracas.Where(x => x.IdPracownika == id_currect_user && x.Data >= first && x.Data <= last && x.DataRozpoczecia != null && x.DataZakonczenia != null).ToList();
+                foreach (var dzien in miesiac_rozliczenia)
+                {
+                    double suma_dzien = 0;
+                    TimeSpan? godziny_przepracowane = dzien.DataZakonczenia - dzien.DataRozpoczecia;
+                    suma_dzien = Math.Round(godziny_przepracowane.Value.TotalHours * zarobek_na_godzine, 2);
+                    items.Add(new Pdf_view { data = dzien.Data.ToShortDateString(), czas_start = dzien.DataRozpoczecia.Value.TimeOfDay, czas_stop = dzien.DataZakonczenia.Value.TimeOfDay, godziny = $"{godziny_przepracowane.Value.Hours}h {godziny_przepracowane.Value.Minutes}min", kwota = $"{suma_dzien}$" });
+                    suma_miesiac = suma_miesiac + suma_dzien;
+                }
+                suma_wyplata = $"{suma_miesiac}$";
+            }
+            return (items, suma_wyplata, data_rozliczenia);
+
+
+        }
         public IActionResult Urlopy()
         {
             var username = HttpContext.Session.GetString("Session_Username");
@@ -145,10 +178,9 @@ namespace Epracownik.Controllers
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    List<Pdf_view> pdfView = new List<Pdf_view>();
-                    pdfView.Add(new Pdf_view { data = "01.01.2023", czas_start = new TimeSpan(9, 0, 0), czas_stop = new TimeSpan(17, 0, 0), godziny = "8", kwota = "320" });
-                    pdfView.Add(new Pdf_view { data = "02.01.2023", czas_start = new TimeSpan(9, 0, 0), czas_stop = new TimeSpan(17, 0, 0), godziny = "8", kwota = "320" });
-                    pdfView.Add(new Pdf_view { data = "03.01.2023", czas_start = new TimeSpan(9, 0, 0), czas_stop = new TimeSpan(17, 0, 0), godziny = "8", kwota = "320" });
+                    var (pdfView, suma_wynagrodzenie, data_rozliczenia) = fillList();
+                    // Dopisanie danych do tabeli
+                   
 
                     // Utworzenie dokumentu PDF
                     Document document = new Document(PageSize.A4, 10, 10, 10, 10);
@@ -168,7 +200,7 @@ namespace Epracownik.Controllers
                     cellTitleLeft.PaddingTop = 20f;
                     titleTable.AddCell(cellTitleLeft);
 
-                    var cellTitleRight = new PdfPCell(new Phrase("Podpis prezesa\n\n..............\n\nData\n..............", fontContent));
+                    var cellTitleRight = new PdfPCell(new Phrase("Podpis prezesa\n\n....................\n\nData\n....................", fontContent));
                     cellTitleRight.Border = Rectangle.NO_BORDER;
                     cellTitleRight.HorizontalAlignment = Element.ALIGN_RIGHT;
                     cellTitleRight.PaddingTop = 20f;
@@ -179,7 +211,7 @@ namespace Epracownik.Controllers
                     var headerTable = new PdfPTable(1);
                     headerTable.TotalWidth = 500f;
 
-                    var cellHeader = new PdfPCell(new Phrase("Firma S.A. Rozliczenie za okres: Miesiąc rozliczenia", fontHeader));
+                    var cellHeader = new PdfPCell(new Phrase($"Firma S.A. Rozliczenie za okres: {data_rozliczenia}", fontHeader));
                     cellHeader.Border = Rectangle.NO_BORDER;
                     cellHeader.PaddingTop = 40f;
 
@@ -194,36 +226,31 @@ namespace Epracownik.Controllers
                     // Dodawanie nagłówków tabeli
                     Font fontTableHeader = FontFactory.GetFont("Arial", 10, Font.BOLD);
                     var headerCell = new PdfPCell(new Phrase("Data", fontTableHeader));
-                    headerCell.HorizontalAlignment = Element.ALIGN_LEFT;
-                    headerCell.Border = Rectangle.NO_BORDER;
-                    headerCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
                
                     headerCell = new PdfPCell(new Phrase("Rozpoczęcie", fontTableHeader));
                     headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    headerCell.Border = Rectangle.NO_BORDER;
-                    headerCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
 
                     headerCell = new PdfPCell(new Phrase("Zakończenie", fontTableHeader));
                     headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    headerCell.Border = Rectangle.NO_BORDER;
-                    headerCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
 
                     headerCell = new PdfPCell(new Phrase("Godziny", fontTableHeader));
                     headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    headerCell.Border = Rectangle.NO_BORDER;
-                    headerCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
 
                     headerCell = new PdfPCell(new Phrase("Razem", fontTableHeader));
                     headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    headerCell.Border = Rectangle.NO_BORDER;
-                    headerCell.BackgroundColor = BaseColor.LIGHT_GRAY;
+                    headerCell.BackgroundColor = BaseColor.WHITE;
                     table.AddCell(headerCell);
 
-                    // Dopisanie danych do tabeli
+                   
                     foreach (var item in pdfView)
                     {
                         table.AddCell(item.data);
@@ -237,27 +264,42 @@ namespace Epracownik.Controllers
                     document.Add(new Paragraph("\n"));
                     Paragraph signatureLeft = new Paragraph("Podpis", fontContent);
 
-                    Paragraph date = new Paragraph(DateTime.Now.ToString("dd.MM.yyyy"), fontContent);
+                    Paragraph date = new Paragraph("Data", fontContent);
 
-                    Paragraph signatureRight = new Paragraph("Wynagrodzenie: 4000 euro", fontContent);
+                    Paragraph signatureRight = new Paragraph("Wynagrodzenie", fontContent);
 
                     PdfPTable table_SUM= new PdfPTable(3);
                     table.WidthPercentage = 100;
+                    table.PaddingTop = 200;
 
-                    PdfPCell cell1 = new PdfPCell(signatureLeft);
-                    cell1.Border = Rectangle.NO_BORDER;
-                    cell1.HorizontalAlignment = Element.ALIGN_LEFT;
-                    table_SUM.AddCell(cell1);
 
-                    PdfPCell cell2 = new PdfPCell(date);
-                    cell2.Border = Rectangle.NO_BORDER;
-                    cell2.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table_SUM.AddCell(cell2);
 
-                    PdfPCell cell3 = new PdfPCell(signatureRight);
-                    cell3.Border = Rectangle.NO_BORDER;
-                    cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    table_SUM.AddCell(cell3);
+                    PdfPCell cell_podpis = new PdfPCell(signatureLeft);
+                    cell_podpis.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table_SUM.AddCell(cell_podpis);
+
+                    PdfPCell cell_data = new PdfPCell(date);
+                    cell_data.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table_SUM.AddCell(cell_data);
+
+                    PdfPCell cell_wynagrodzenie = new PdfPCell(signatureRight);
+                    cell_wynagrodzenie.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table_SUM.AddCell(cell_wynagrodzenie);
+
+                    table_SUM.AddCell("");
+
+                    PdfPCell cell_data1 = new PdfPCell(new Paragraph(DateTime.Now.ToString("dd.MM.yyyy"), fontContent));
+                    cell_data1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table_SUM.AddCell(cell_data1);
+
+                    PdfPCell cell_wynagrodzenie1 = new PdfPCell(new Paragraph(suma_wynagrodzenie, fontContent));
+                    cell_wynagrodzenie1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table_SUM.AddCell(cell_wynagrodzenie1);
+
+
+
+
+                   
 
                     document.Add(table_SUM);
                     document.Close();
@@ -270,7 +312,9 @@ namespace Epracownik.Controllers
             {
                 return RedirectToAction("Index", "Home", new { Message = "Nie jesteś zalogowany!" });
             }
+           
 
         }
+       
     }
 }
