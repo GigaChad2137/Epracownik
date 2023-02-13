@@ -60,7 +60,7 @@ namespace Epracownik.Controllers
                                                    on users.Id equals informacje_personalne.IdPracownika
                                                    join user_wnioski in db.UserWnioskis on users.Id equals user_wnioski.IdPracownika
                                                    join wnioski in db.Wnioskis on user_wnioski.IdWniosku equals wnioski.Id
-                                                   where user_wnioski.StatusWniosku == null && users.Id == id_currect_user
+                                                   where users.Id == id_currect_user
                                                    select new
                                                     {
                                                         wnioski.TypWniosku,

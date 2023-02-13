@@ -1,0 +1,66 @@
+﻿@model List<Epracownik.Controllers.MainAdmin.WnioskiDoRozpatrzeniaModel>
+    <style>
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #ddd;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #f5f5f5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+    </style>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Wniosek</th>
+            <th>Imie</th>
+            <th>Nazwisko</th>
+            <th>Dni Urlopowe</th>
+            <th>Data Rozpoczęcia</th>
+            <th>Data Zakończenia</th>
+            <th>Notka</th>
+            <th>Kwota</th>
+            <th>Akcja</th>
+        </tr>
+    </thead> 
+    <tbody>
+        @foreach (var wniosek in Model)
+        {
+        <tr>
+            <td>@wniosek.TypWniosku</td>
+            <td>@wniosek.Imie</td>
+            <td>@wniosek.Nazwisko</td>
+            <td>@wniosek.DniUrlopowe</td>
+            <td>@wniosek.DataRozpoczecia.ToString("dd/MM/yyyy")</td>
+            <td>@wniosek.DataZakonczenia.ToString("dd/MM/yyyy")</td>
+            <td>@wniosek.Notka</td>
+            <td>@wniosek.Kwota</td>
+            <td style="width:160px;">
+                <a id="edit_admin" href="/mainadmin/akceptuj_wniosek/@wniosek.TypWniosku/@wniosek.Id_wniosku" class="btn btn-secondary btn-sm" title="Zaakceptuj Wniosek">Akceptuj</a>
+                <a id="delete_admin" href="/mainadmin/odrzuc_wniosek/@wniosek.TypWniosku/@wniosek.Id_wniosku" class="btn btn-danger btn-delete btn-sm" title="Odrzuć Wniosek">Usuń</a>
+
+            </td>
+        </tr>
+        }
+        </tbody>
+</table>

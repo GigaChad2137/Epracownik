@@ -34,11 +34,13 @@ namespace Epracownik.Controllers
                     var id_checker = id_finder.FirstOrDefault<User>();  //funkcja zwracająca pierwszy wiersz z wcześniejszego zapytania
                     DateTime thisDay = DateTime.Today; //zmienna zawierająca aktualną date
                     var czy_pracuje = db.Pracas.Where(x => x.IdPracownika == id_checker.Id && x.Data == thisDay).Count(); // zapytanie do bazy danych, które zlicza ilość zwróconych rekordów
-                    Console.WriteLine(czy_pracuje);
                     if (czy_pracuje == 0)  // jeżeli zapytanie zwróci 0 to wykona się zapisanie rekordu i commit transakcji - czyli dodanie rekordu do bazy danych
                     {
+
                         db.Pracas.Add(new Praca { IdPracownika = id_checker.Id, Data = thisDay, DataRozpoczecia = null, DataZakonczenia = null, CzyPracuje = "Nie Pracuje" });
                         db.SaveChanges();
+                        contex.Commit();
+                        Console.WriteLine("db.Users.Where(c => c.Username == username && c.Password == passwdhashed).Any()");
                         status_pracy = "Rozpocznij Prace";
                     }
                     else
@@ -52,7 +54,7 @@ namespace Epracownik.Controllers
                     HttpContext.Session.SetString("Session_Username", username);
                     HttpContext.Session.SetInt32("Session_id", id_checker.Id);
                     HttpContext.Session.SetString("Session_Praca", status_pracy);
-                    contex.Commit();
+                   
                     if (db.UserRoles.Where(c => c.IdUser == id_checker.Id && c.IdRole == 1).Any()) //zapytanie sprawdzajace czy użytkownik posiada uprawnienia admmina
                     {
                         HttpContext.Session.SetString("Session_Rola", "Admin");
@@ -66,8 +68,6 @@ namespace Epracownik.Controllers
                 }
                 else
                 {
-
-
                     ViewData["Message"] = "Nieprawidłowy login lub hasło";
                     return View();
                 }

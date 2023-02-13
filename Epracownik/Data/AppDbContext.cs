@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Epracownik.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace Epracownik.Data
 {
     public partial class AppDbContext : DbContext
     {
+        
         public AppDbContext()
         {
         }
@@ -26,9 +28,10 @@ namespace Epracownik.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            string path = Directory.GetCurrentDirectory();
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Klaudiusz\\source\\repos\\Dziekanat\\baza_projekt.mdf;Integrated Security=True");
+                optionsBuilder.UseSqlServer($@"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={path}\baza_projekt.mdf;Integrated Security=True");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
