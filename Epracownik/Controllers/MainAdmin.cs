@@ -125,7 +125,9 @@ namespace Epracownik.Controllers
                     if (typ_wniosku == "Urlop")
                     {
                         TimeSpan difference = wybrany_wniosek.DataZakonczenia - wybrany_wniosek.DataRozpoczecia;
-                        uzytkownik_wnioskujacy.DniUrlopowe = uzytkownik_wnioskujacy.DniUrlopowe - difference.Days;
+                        int dni_roznica = uzytkownik_wnioskujacy.DniUrlopowe - difference.Days -1;
+
+                        uzytkownik_wnioskujacy.DniUrlopowe = dni_roznica;
                         wybrany_wniosek.StatusWniosku = true;
                         db.SaveChanges();
 
