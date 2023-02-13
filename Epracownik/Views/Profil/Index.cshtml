@@ -1,0 +1,63 @@
+﻿@model InformacjePersonalne
+    <style>
+        .profile-card {
+            width: 600px;
+            height: 700px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            margin: 50px auto;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px #ccc;
+        }
+
+        .profile-header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            font-size: 36px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .profile-body {
+            padding: 40px;
+        }
+
+        .profile-item {
+            margin-bottom: 40px;
+        }
+
+            .profile-item h3 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .profile-item p {
+                font-size: 22px;
+            }
+    </style>
+    <div class="profile-card">
+        <div class="profile-header">Twój profil</div>
+        <div class="profile-body">
+            <div class="profile-item">
+                <h3>Imię i nazwisko:</h3>
+                <p>@Model.Imie @Model.Nazwisko </p>
+            </div>
+            <hr>
+            <div class="profile-item">
+                <h3>Dni urlopowe:</h3>
+                <p>@Model.DniUrlopowe</p>
+            </div>
+            <hr>
+            <div class="profile-item">
+                <h3>Zarobki:</h3>
+                <p>@Model.Zarobki$ </p>
+            </div>
+            <hr>
+            <div class="profile-item">
+                <h3>Data zatrudnienia:</h3>
+                <p>@Model.DataZatrudnienia.ToShortDateString()</p>
+            </div>
+        </div>
+    </div>
