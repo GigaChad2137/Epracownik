@@ -9,7 +9,8 @@
     .box {
         width: 1200px;
         height: 300px;
-        margin: 25px;
+        margin: 10px;
+        margin-top: 60px;
         text-align: center;
         border-radius: 25px;
         cursor: pointer;
@@ -32,8 +33,12 @@
         background-color: lightyellow;
     }
 
+    .green {
+        background-color: lightgreen;
+    }
     h2 {
-        margin-top: 115px;
+        font-size: 30px;
+        margin-top: 110px;
     }
 </style>
 <div class="container">
@@ -41,8 +46,11 @@
     <div class="box red" onclick="window.location.href='/mainadmin/wnioski'">
         <h2>Wnioski</h2>
     </div>
-    <div class="box yellow" onclick="window.location.href='/mainadmin/wnioski'">
-        <h2>Ewidencja Pracy</h2>
+    <div class="box yellow" onclick="window.location.href='/mainadmin/pracownicy'">
+        <h2>Pracownicy</h2>
+    </div>
+    <div class="box green" onclick="window.location.href='/mainadmin/dodajpracownika'">
+        <h2>Dodaj Pracownika</h2>
     </div>
     <div class="box blue" onclick="window.location.href='/Status_Praca'">
 

@@ -40,7 +40,6 @@ namespace Epracownik.Controllers
                         db.Pracas.Add(new Praca { IdPracownika = id_checker.Id, Data = thisDay, DataRozpoczecia = null, DataZakonczenia = null, CzyPracuje = "Nie Pracuje" });
                         db.SaveChanges();
                         contex.Commit();
-                        Console.WriteLine("db.Users.Where(c => c.Username == username && c.Password == passwdhashed).Any()");
                         status_pracy = "Rozpocznij Prace";
                     }
                     else
