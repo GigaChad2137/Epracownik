@@ -1,5 +1,93 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+    }
+
+    .register-form {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+    }
+
+        .register-form h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .register-form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .register-form input[type=text],
+        .register-form input[type=password] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 3px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .register-form input[type=checkbox] {
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .register-form button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            .register-form button:hover {
+                background-color: #3e8e41;
+            }
+</style>
+<div class="register-form">
+    <h2>Rejestracja użytkownika</h2>
+    <form method="post">
+        <label for="username_konto">Nazwa użytkownika:</label>
+        <input type="text" id="username_konto" name="username_konto">
+
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password">
+
+        <label for="retype_password">Powtórz hasło:</label>
+        <input type="password" id="retype_password" name="retype_password">
+
+        <label for="imie">Imię:</label>
+        <input type="text" id="imie" name="imie">
+
+        <label for="nazwisko">Nazwisko:</label>
+        <input type="text" id="nazwisko" name="nazwisko">
+
+        <label for="reg_zarobki">Wynagrodzenie:</label>
+        <input type="text" id="reg_zarobki" name="reg_zarobki">
+
+        <label for="czy_szef">
+            <input type="checkbox" id="czy_szef" value="True" name="czy_szef">
+            Czy jesteś szefem?
+        </label>
+
+        <button type="submit">Zarejestruj</button>
+
+    </form>
+    <br />
+    @if (ViewData["Message"] != null)
+    {
+        <div class="alert alert-primary">
+            @ViewData["Message"]
+        </div>
+    }
+</div>

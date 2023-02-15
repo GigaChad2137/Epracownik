@@ -204,6 +204,10 @@ namespace Epracownik.Controllers
                 return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
             }
         }
+        public IActionResult DodajPracownika()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult DodajPracownika(string username_konto,string password,string retype_password,string imie,string nazwisko,int reg_zarobki, bool czy_szef)
@@ -220,6 +224,7 @@ namespace Epracownik.Controllers
                 var reg_imie = imie;
                 var reg_nazwisko = nazwisko;
                 DateTime today = DateTime.Today;
+                Console.WriteLine(czy_szef);
               
                 using (var contex = db.Database.BeginTransaction())
                 {
@@ -239,6 +244,7 @@ namespace Epracownik.Controllers
                                 string passwd_hash = Convert.ToBase64String(hashed_Data);
                                 User new_usr = new User { Username = reg_user, Password = passwd_hash };
                                 db.Users.Add(new_usr);
+                                db.SaveChanges();
                                 if (czy_szef == true)
                                 {
                                     db.UserRoles.Add(new UserRole { IdUser = new_usr.Id, IdRole = 1 });
@@ -289,6 +295,7 @@ namespace Epracownik.Controllers
             }
             else
             {
+                Console.WriteLine("tutaj wpdaa xD?");
                 return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
             }
         }
