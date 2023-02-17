@@ -206,7 +206,17 @@ namespace Epracownik.Controllers
         }
         public IActionResult DodajPracownika()
         {
-            return View();
+            var username = HttpContext.Session.GetString("Session_Username");
+            var rola = HttpContext.Session.GetString("Session_Rola");
+            if (!string.IsNullOrEmpty(username) && rola == "Admin")
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
+            }
+
         }
 
         [HttpPost]
@@ -295,7 +305,6 @@ namespace Epracownik.Controllers
             }
             else
             {
-                Console.WriteLine("tutaj wpdaa xD?");
                 return RedirectToAction("Index", "Home", new { Message = "Nie masz uprawnień!" });
             }
         }

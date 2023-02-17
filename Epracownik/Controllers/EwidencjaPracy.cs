@@ -51,7 +51,7 @@ namespace Epracownik.Controllers
                     items.Add(new Pdf_view { data = dzien.Data.ToShortDateString(), czas_start = dzien.DataRozpoczecia.Value.TimeOfDay, czas_stop = dzien.DataZakonczenia.Value.TimeOfDay, godziny = $"{godziny_przepracowane.Value.Hours}h {godziny_przepracowane.Value.Minutes}min", kwota = $"{suma_dzien}$" });
                     suma_miesiac = suma_miesiac + suma_dzien;
                 }
-                suma_wyplata = $"{suma_miesiac}$";
+                suma_wyplata = $"{Math.Round(suma_miesiac,2)}$";
             }
             return (items, suma_wyplata, data_rozliczenia);
         }
