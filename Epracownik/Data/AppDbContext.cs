@@ -23,7 +23,6 @@ namespace Epracownik.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserWnioski> UserWnioskis { get; set; }
-        public virtual DbSet<Wiadomosci> Wiadomoscis { get; set; }
         public virtual DbSet<Wnioski> Wnioskis { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -205,34 +204,6 @@ namespace Epracownik.Data
                     .HasForeignKey(d => d.IdWniosku)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__user_wnio__id_wn__634EBE90");
-            });
-
-            modelBuilder.Entity<Wiadomosci>(entity =>
-            {
-                entity.ToTable("wiadomosci");
-
-                entity.Property(e => e.CzyPrzeczytane)
-                    .IsRequired()
-                    .HasColumnName("czy_przeczytane")
-                    .HasDefaultValueSql("('FALSE')");
-
-                entity.Property(e => e.IdNadawcy).HasColumnName("id_nadawcy");
-
-                entity.Property(e => e.IdOdbiorcy).HasColumnName("id_odbiorcy");
-
-                entity.Property(e => e.Wiadomosc).IsUnicode(false);
-
-                entity.HasOne(d => d.IdNadawcyNavigation)
-                    .WithMany(p => p.WiadomosciIdNadawcyNavigations)
-                    .HasForeignKey(d => d.IdNadawcy)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__wiadomosc__id_na__3C34F16F");
-
-                entity.HasOne(d => d.IdOdbiorcyNavigation)
-                    .WithMany(p => p.WiadomosciIdOdbiorcyNavigations)
-                    .HasForeignKey(d => d.IdOdbiorcy)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__wiadomosc__id_od__3D2915A8");
             });
 
             modelBuilder.Entity<Wnioski>(entity =>

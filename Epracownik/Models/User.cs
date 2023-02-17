@@ -11,8 +11,6 @@ namespace Epracownik.Models
         {
             Pracas = new HashSet<Praca>();
             UserWnioskis = new HashSet<UserWnioski>();
-            WiadomosciIdNadawcyNavigations = new HashSet<Wiadomosci>();
-            WiadomosciIdOdbiorcyNavigations = new HashSet<Wiadomosci>();
         }
 
         public int Id { get; set; }
@@ -23,7 +21,5 @@ namespace Epracownik.Models
         public virtual UserRole UserRole { get; set; }
         public virtual ICollection<Praca> Pracas { get; set; }
         public virtual ICollection<UserWnioski> UserWnioskis { get; set; }
-        public virtual ICollection<Wiadomosci> WiadomosciIdNadawcyNavigations { get; set; }
-        public virtual ICollection<Wiadomosci> WiadomosciIdOdbiorcyNavigations { get; set; }
     }
 }
