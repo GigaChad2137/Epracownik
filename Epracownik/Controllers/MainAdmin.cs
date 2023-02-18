@@ -133,7 +133,7 @@ namespace Epracownik.Controllers
                 {
                     var wybrany_wniosek = db.UserWnioskis.Where(x => x.Id == id).First();
                     var id_currect_user = HttpContext.Session.GetInt32("Session_id");
-                    var uzytkownik_wnioskujacy = db.InformacjePersonalnes.Where(x => x.IdPracownika == id_currect_user).First();
+                    var uzytkownik_wnioskujacy = db.InformacjePersonalnes.Where(x => x.IdPracownika == wybrany_wniosek.IdPracownika).First();
                     if (typ_wniosku == "Urlop")
                     {
                         TimeSpan difference = wybrany_wniosek.DataZakonczenia - wybrany_wniosek.DataRozpoczecia;
